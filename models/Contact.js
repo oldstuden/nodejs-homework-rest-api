@@ -2,22 +2,25 @@ import { Schema, model } from 'mongoose';
 import { handleSaveError, preUpdate } from './hooks.js';
 import Joi from 'joi';
 
-const contactSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
+const contactSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
   },
-  email: {
-    type: String,
-  },
-  phone: {
-    type: String,
-  },
-  favorite: {
-    type: Boolean,
-    default: false,
-  },
-});
+  { versionKey: false }
+);
 
 contactSchema.post('save', handleSaveError);
 contactSchema.pre('findOneAndUpdate', preUpdate);
@@ -44,7 +47,9 @@ export const contactUpdateSchema = Joi.object({
 });
 
 export const contactFavoriteSchema = Joi.object({
-  favorite: Joi.boolean().required(),
+  favorite: Joi.boolean()
+    .required()
+    .messages({ 'any.required': 'missing field favorite' }),
 });
 const Contact = model('contact', contactSchema);
 
