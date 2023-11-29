@@ -54,7 +54,23 @@ const signin = async (req, res) => {
   });
 };
 
+const current = async (req, res) => {
+  const { email, subscription } = req.user;
+  res.status(200).json({
+    email,
+    subscription,
+  });
+};
+
+const logout = async (req, res) => {
+  const { _id } = req.user;
+  await User.findByIdAndUpdate(_id, { token: '' });
+  res.status(204).json();
+};
+
 export default {
   signup: ctrlContactWrapper(signup),
   signin: ctrlContactWrapper(signin),
+  current: ctrlContactWrapper(current),
+  logout: ctrlContactWrapper(logout),
 };
