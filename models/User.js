@@ -5,20 +5,24 @@ import { handleSaveError, preUpdate } from './hooks.js';
 const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const userSchema = new Schema(
   {
-    username: {
+    subscription: {
       type: String,
-      required: true,
+      enum: ['starter', 'pro', 'business'],
+      default: 'starter',
     },
     email: {
       type: String,
       match: emailRegexp,
       unique: true,
-      required: true,
+      required: [true, 'Set email for user'],
     },
     password: {
       type: String,
       minLength: 6,
-      required: true,
+      required: [true, 'Set password for user'],
+    },
+    token: {
+      type: String,
     },
   },
   { versionKey: false }
