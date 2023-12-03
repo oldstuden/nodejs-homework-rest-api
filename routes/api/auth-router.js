@@ -7,17 +7,17 @@ import { userSigninSchema, userSignupSchema } from '../../models/User.js';
 const authRouter = express.Router();
 
 authRouter.post(
-  '/signup',
+  '/register',
   isEmptyBody,
   validateBodyWrapper(userSignupSchema),
-  authController.signup
+  authController.register
 );
 
 authRouter.post(
-  '/signin',
+  '/login',
   isEmptyBody,
   validateBodyWrapper(userSigninSchema),
-  authController.signin
+  authController.login
 );
 
 authRouter.get('/current', authentication, authController.current);
