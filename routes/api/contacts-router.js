@@ -4,6 +4,7 @@ import {
   isEmptyBody,
   isValidateId,
   authentication,
+  upload,
 } from '../../middlewares/index.js';
 import { validateBodyWrapper } from '../../decorators/index.js';
 import {

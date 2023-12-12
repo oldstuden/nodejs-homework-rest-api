@@ -3,20 +3,31 @@ import { ctrlContactWrapper } from '../decorators/index.js';
 import { HttpError } from '../helpers/index.js';
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
+import gravatar from 'gravatar';
+import path from 'path';
+import fs from 'fs/promises';
 import 'dotenv/config';
+import jimp from 'jimp';
+
+const avatarsPath = path.resolve('public', 'avatars');
 
 const { JWT_SECRET } = process.env;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
+  const avatarURL = gravatar.url(email);
 
   if (user) {
     throw HttpError(409, 'Email in use');
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL,
+  });
 
   res.status(201).json({
     user: {
@@ -68,9 +79,22 @@ const logout = async (req, res) => {
   res.status(204).json();
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: oldPath, filename } = req.file;
+
+  const newPath = path.join(avatarsPath, filename);
+  (await jimp.read(oldPath)).resize(250, 250).write(oldPath);
+  await fs.rename(oldPath, newPath);
+  const avatarURL = path.join('avatars', filename);
+  await User.findByIdAndUpdate(_id, { avatarURL });
+  res.status(200).json({ avatarURL });
+};
+
 export default {
   register: ctrlContactWrapper(register),
   login: ctrlContactWrapper(login),
   current: ctrlContactWrapper(current),
   logout: ctrlContactWrapper(logout),
+  updateAvatar: ctrlContactWrapper(updateAvatar),
 };
