@@ -35,7 +35,7 @@ const add = async (req, res) => {
   await fs.rename(oldPath, newPath);
 
   const avatar = path.join('avatars', filename);
-  const result = await Contact.create({ ...req.body, owner });
+  const result = await Contact.create({ ...req.body, avatar, owner });
   res.status(201).json(result);
 };
 

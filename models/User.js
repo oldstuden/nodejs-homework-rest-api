@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import Joi, { string } from 'joi';
+import Joi from 'joi';
 import { handleSaveError, preUpdate } from './hooks.js';
 
 const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
