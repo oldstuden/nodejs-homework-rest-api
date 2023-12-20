@@ -21,7 +21,7 @@ authRouter.post(
   authController.register
 );
 
-authRouter.get('verify/:verificationCode', authController.verify);
+authRouter.get('/verify/:verificationCode', authController.verify);
 
 authRouter.post(
   '/verify',

@@ -14,6 +14,14 @@ const avatarsPath = path.resolve('public', 'avatars');
 
 const { JWT_SECRET, BASE_URL } = process.env;
 
+const verifyEmail = (email, verificationCode) => {
+  return {
+    to: email,
+    subject: 'Verify email',
+    html: `<a target="_blank" href="${BASE_URL}/users/verify/${verificationCode}">Click verify email</a>`,
+  };
+};
+
 const register = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -31,12 +39,7 @@ const register = async (req, res) => {
     avatarURL,
     verificationCode,
   });
-  const verifyEmail = {
-    to: email,
-    subject: 'Verify email',
-    html: `<a target="_blank" href="${BASE_URL}/users/verify/${verificationCode}">Click verify email</a>`,
-  };
-  await sendEmail(verifyEmail);
+  await sendEmail(verifyEmail(email, verificationCode));
 
   res.status(201).json({
     user: {
@@ -52,6 +55,7 @@ const verify = async (req, res) => {
   if (!user) {
     throw HttpError(401, 'Email not found');
   }
+
   await User.findByIdAndUpdate(user._id, {
     verify: true,
     verificationCode: '',

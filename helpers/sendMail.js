@@ -11,17 +11,16 @@ const nodemailerConfig = {
     user: UKR_NET_EMAIL,
     pass: UKR_NET_PASSWORD,
   },
-  tls: {
-    rejectUnauthorized: false,
-  },
+  // tls: {
+  //   rejectUnauthorized: false,
+  // },
 };
 
 const transport = nodemailer.createTransport(nodemailerConfig);
 
-const sendEmail = async (data) => {
+const sendEmail = (data) => {
   const email = { ...data, from: UKR_NET_EMAIL };
-  await transport.sendMail(email);
-  return true;
+  return transport.sendMail(email);
 };
 
 export default sendEmail;
